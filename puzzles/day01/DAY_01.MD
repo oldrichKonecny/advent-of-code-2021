@@ -1,4 +1,4 @@
-# AoC 2021 Day 1 :christmas_tree:
+# AoC 2021 Day 1 🎄
 
 ---
 
@@ -23,3 +23,4 @@ sliding window won pretty convincingly.
 Not sure what magic rust/llvm is doing, but it feels great to know that short, elegant solution is 
 also the faster one.
 
+Can't wait for day 2 🙂
