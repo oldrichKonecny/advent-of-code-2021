@@ -1,4 +1,4 @@
-# :magic_wand: AoC 2021 Day 1 :christmas_tree:
+# AoC 2021 Day 1 :christmas_tree:
 
 ---
 
@@ -8,7 +8,7 @@ Day one is over, and I'm glad the task wasn't that harder.
 
 First part seemed easy. After parsing input into `Vec<i32>` I went with the good old for cycle while remembering count
 and previous value. But of course I only updated the previous value when incrementing count, which took me like 10 
-minutes to realize... After that it was easy-peasy :lemon:.
+minutes to realize... After that it was easy-peasy. :lemon:
 
 Second part was surprisingly easier than first part. Only I have to google how to sliding window with rust.
 With that comparing first and fourth element in window was no-brainer.
