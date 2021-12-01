@@ -10,10 +10,10 @@ First part seemed easy. After parsing input into `Vec<i32>` I went with the good
 and previous value. But of course I only updated the previous value when incrementing count, which took me like 10 
 minutes to realize... After that it was easy-peasy. :lemon:
 
-Second part was surprisingly easier than first part. Only I have to google how to sliding window with rust.
+Second part was easier than first part. Only I have to google how to use sliding window with rust.
 With that comparing first and fourth element in window was no-brainer.
 
-I also created solution for first part using sliding window and then bench it against for loop and to my great surprise 
+Also I wrote solution for first part using sliding window and then bench it against for loop. To my great surprise, 
 sliding window won pretty convincingly.
 
 > sliding window: 682 ns/iter (+/- 30) :rocket:
