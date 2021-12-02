@@ -15,3 +15,5 @@ Then in for loop count and sum what is needed and return result.
 There is not really a need to parse it first. Processing the result would be easy enough in one run, but parsing into enum 
 seems so nice and idiomatic, that I couldn't resist. ☺
 
+---
+[Back](/README.md)

@@ -2,7 +2,7 @@
 
 ---
 
-[task](https://adventofcode.com/2021/day/1)
+[Task](https://adventofcode.com/2021/day/1)
 
 Day one is over, and I'm glad the task wasn't that harder. 
 
@@ -24,3 +24,6 @@ Not sure what magic rust/llvm is doing, but it feels great to know that short, e
 also the faster one.
 
 Can't wait for day 2 🙂
+
+---
+[Back](/README.md)
