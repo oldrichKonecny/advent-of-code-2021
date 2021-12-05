@@ -8,9 +8,9 @@ fn main() {
 fn second_solution(input: &str) -> u64 {
     let mut split = input.split("\r\n\r\n");
     let board_inputs = split.next().unwrap().split(',')
-        .map(|s| s.parse::<u32>().unwrap_or_else(|e| panic!("Cannot parse: {}, with error: {}", "s", e)))
+        .map(|s| s.parse::<u32>().unwrap_or_else(|e| panic!("Cannot parse: {}, with error: {}", s, e)))
         .collect::<Vec<_>>();
-    let mut boards = split.into_iter()
+    let boards = split.into_iter()
         .map(Board::from)
         .collect::<Vec<_>>();
 
@@ -40,9 +40,9 @@ fn play_bingo_lose(values: &[u32], mut boards: Vec<Board>) -> (u64, u64) {
 }
 
 fn first_solution(input: &str) -> u64 {
-    let mut split = input.split("\r\n\r\n");
+    let mut split = input.split("\n\n");
     let board_inputs = split.next().unwrap().split(',')
-        .map(|s| s.parse::<u32>().unwrap_or_else(|e| panic!("Cannot parse: {}, with error: {}", "s", e)))
+        .map(|s| s.parse::<u32>().unwrap_or_else(|e| panic!("Cannot parse: {}, with error: {}", s, e)))
         .collect::<Vec<_>>();
     let mut boards = split.into_iter()
         .map(Board::from)
