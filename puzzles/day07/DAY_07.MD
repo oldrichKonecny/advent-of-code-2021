@@ -1,4 +1,4 @@
-# :magic_wand: AoC 2021 Day 6 :christmas_tree:
+# :magic_wand: AoC 2021 Day 7 :christmas_tree:
 
 ---
 
