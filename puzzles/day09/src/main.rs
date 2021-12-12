@@ -1,85 +1,64 @@
 use std::borrow::BorrowMut;
 use std::cell::{Cell, RefCell};
+use std::collections::HashMap;
+use std::iter::Map;
 use std::ops::Add;
 use std::rc::Rc;
 
 fn main() {
     let input = include_str!("../input.txt");
+    let input_test = include_str!("../input_test.txt");
 
     println!("First solution: {}", first_solution(&input)); // 526
-    // println!("Second solution: {}", second_solution(&input)); //
+    println!("Second solution: {}", second_solution(&input)); //
 
-    println!("second solution test: {}", second_solution("2199943210
-3987894921
-9856789892
-8767896789
-9899965678"));
+    // println!("second solution test: {}", second_solution(&input_test));
 }
 
 fn second_solution(input: &str) -> usize {
-    let ranges = input.lines()
-        .map(|l| {
-            let mut res = Vec::new();
-            let mut tmp = None;
-            for (i, c) in l.chars().enumerate() {
-                let c = c as u32 - 48;
-                if tmp.is_none() && c != 9 && i == l.len() - 1 {
-                    let t = (i, i);
-                    res.push(t);
-                } else if tmp.is_none() && c != 9 {
-                    tmp = Some(i);
-                } else if tmp.is_some() && c == 9 {
-                    let t = (tmp.unwrap(), i - 1);
-                    res.push(t);
-                    tmp = None;
-                } else if tmp.is_some() && i == l.len() - 1 {
-                    let t = (tmp.unwrap(), i);
-                    res.push(t);
-                }
-            }
-            res
-        })
-        .collect::<Vec<_>>();
+    let ranges = Matrix::from(input).get_ranges();
     let mut all_bounds: Vec<Vec<Bound>> = Vec::new();
-    for (i, line) in ranges.iter().enumerate() {
+    for (i, vec) in ranges.iter().enumerate() {
         let mut bounds = Vec::new();
-        for r in line.iter() {
+        for r in vec.iter() {
             if i == 0 {
-                bounds.push(Bound::from(r.0, r.1, true));
+                bounds.push(Bound::from(r.0, r.1, r.2));
                 continue;
             }
 
             let prev_bounds = all_bounds.get_mut(i - 1).unwrap();
             let mut affected_bounds = prev_bounds.iter_mut().filter(|b| b.is_connected(r.0, r.1)).collect::<Vec<_>>();
             match affected_bounds.len() {
-                0 => bounds.push(Bound::from(r.0, r.1, true)),
-                1 => {
-                    let new_bound = Bound::from_bound(r.0, r.1, &mut affected_bounds[0]);
+                0 => bounds.push(Bound::from(r.0, r.1, r.2)),
+                1 => bounds.push(Bound::from_bound(r.0, r.1, r.2,&mut affected_bounds[0])),
+                _ => {
+                    let mut new_bound = Bound::from_bound(r.0, r.1, r.2,&mut affected_bounds[0]);
+                    affected_bounds[1..].iter_mut().for_each(|b| {
+                        let b_val = b.sum.take() + new_bound.sum.take();
+                        new_bound.sum.replace(b_val);
+                        b.sum = new_bound.sum.clone();
+                    });
                     bounds.push(new_bound);
                 },
-                _ => {
-                    let first_bound = affected_bounds[0];
-                    for b in &affected_bounds[1..] {
-                        b.is_top = false
-                    }
-                }
             }
         }
         all_bounds.push(bounds);
     }
 
-    for (i, bounds) in all_bounds.iter().enumerate() {
-        for b in bounds.iter() {
-            println!("{}: {:?}", i, b);
-        }
-        println!();
-    }
+
+    // for (i, vec) in all_bounds.iter().enumerate() {
+    //     for (j, val) in vec.iter().enumerate() {
+    //         println!("{}:  {:?}", i + 1, val);
+    //     }
+    //     println!();
+    // }
 
     let mut sums = all_bounds.iter()
-        .flat_map(|bounds| bounds.iter().filter(|b| b.is_top))
-        .map(|b| b.sum.take())
+        .flat_map(|bounds| bounds.iter())
+        .map(|b| { b.sum.take() })
         .collect::<Vec<_>>();
     sums.sort();
+
     sums.into_iter().rev().take(3).fold(1, |acc, s| s * acc)
 }
 
@@ -88,28 +67,28 @@ struct Bound {
     start: usize,
     end: usize,
     sum: Rc<RefCell<usize>>,
-    is_top: bool,
+    is_sink: bool,
 }
 
 impl Bound {
-    fn from(start: usize, end: usize, is_top: bool) -> Self {
+    fn from(start: usize, end: usize, is_sink: bool) -> Self {
         assert!(start <= end, "Bound start is bigger than end.");
         Self {
             start,
             end,
             sum: Rc::new(RefCell::new(end - start + 1)),
-            is_top,
+            is_sink,
         }
     }
 
-    fn from_bound(start: usize, end: usize, old_bound: &mut Bound) -> Self {
+    fn from_bound(start: usize, end: usize, is_sink: bool, old_bound: &mut Bound) -> Self {
         assert!(start <= end, "Bound start is bigger than end.");
         old_bound.sum.replace((end - start + 1) + old_bound.sum.take());
         Self {
             start,
             end,
             sum: old_bound.sum.clone(),
-            is_top: false,
+            is_sink,
         }
     }
 
@@ -157,6 +136,34 @@ impl Matrix {
             }
         }
         res
+    }
+
+    fn get_ranges(&self) -> Vec<Vec<(usize, usize, bool)>> {
+        self.vec.iter().enumerate()
+            .map(|(i, vec)| {
+                let mut res = Vec::new();
+                let mut tmp = None;
+                let mut is_sink = false;
+                for (j, &v) in vec.iter().enumerate() {
+                    if !is_sink {
+                        is_sink = self.check_low_point(i, j)
+                    }
+
+                    if tmp.is_none() && v != 9 && j == vec.len() - 1 {
+                        res.push((j, j, is_sink));
+                    } else if tmp.is_none() && v != 9 {
+                        tmp = Some(j);
+                    } else if tmp.is_some() && v == 9 {
+                        res.push((tmp.unwrap(), j - 1, is_sink));
+                        tmp = None;
+                        is_sink = false;
+                    } else if tmp.is_some() && j == vec.len() - 1 {
+                        res.push((tmp.unwrap(), j, is_sink));
+                    }
+                }
+                res
+            })
+            .collect()
     }
 }
 
