@@ -81,12 +81,6 @@ impl SevenString {
             .filter(|c| !rhs.contains(c))
             .collect()
     }
-    fn same(&self, rhs: &Self) -> Vec<char> {
-        let rhs = rhs.0.chars().collect::<Vec<_>>();
-        self.0.chars()
-            .filter(|c| rhs.contains(c))
-            .collect()
-    }
 }
 
 impl Line {
@@ -114,7 +108,7 @@ impl Line {
         let eight = self.input.iter().filter(|ss| ss.len() == 7).next().unwrap();
         let x0 = seven.sub(&one)[0];
 
-        let mut six_digits = self.input.iter().filter(|ss| ss.len() == 6).collect::<Vec<_>>();
+        let six_digits = self.input.iter().filter(|ss| ss.len() == 6).collect::<Vec<_>>();
         let x2 = six_digits.iter()
             .map(|ss| one.sub(ss))
             .filter(|v| v.len() == 1)
@@ -122,7 +116,7 @@ impl Line {
 
         let x5 = one.0.chars().filter(|c| *c != x2).next().unwrap();
 
-        let mut five_digits = self.input.iter().filter(|ss| ss.len() == 5).collect::<Vec<_>>();
+        let five_digits = self.input.iter().filter(|ss| ss.len() == 5).collect::<Vec<_>>();
         let three = five_digits.iter().filter(|ss| ss.0.contains(x0) && ss.0.contains(x2) && ss.0.contains(x5)).next().unwrap();
         let x3 = four.0.chars().filter(|c| *c != x2 && *c != x5 && three.0.contains(*c)).next().unwrap();
         let x1 = four.0.chars().filter(|c| *c != x2 && *c != x3 && *c != x5).next().unwrap();

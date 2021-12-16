@@ -1,18 +1,11 @@
-use std::borrow::BorrowMut;
-use std::cell::{Cell, RefCell};
-use std::collections::HashMap;
-use std::iter::Map;
-use std::ops::Add;
+use std::cell::RefCell;
 use std::rc::Rc;
 
 fn main() {
     let input = include_str!("../input.txt");
-    let input_test = include_str!("../input_test.txt");
 
     println!("First solution: {}", first_solution(&input)); // 526
     println!("Second solution: {}", second_solution(&input)); //
-
-    // println!("second solution test: {}", second_solution(&input_test));
 }
 
 fn second_solution(input: &str) -> usize {
@@ -32,7 +25,7 @@ fn second_solution(input: &str) -> usize {
                 0 => bounds.push(Bound::from(r.0, r.1, r.2)),
                 1 => bounds.push(Bound::from_bound(r.0, r.1, r.2,&mut affected_bounds[0])),
                 _ => {
-                    let mut new_bound = Bound::from_bound(r.0, r.1, r.2,&mut affected_bounds[0]);
+                    let new_bound = Bound::from_bound(r.0, r.1, r.2,&mut affected_bounds[0]);
                     affected_bounds[1..].iter_mut().for_each(|b| {
                         let b_val = b.sum.take() + new_bound.sum.take();
                         new_bound.sum.replace(b_val);

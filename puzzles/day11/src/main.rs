@@ -64,7 +64,7 @@ fn make_step(mat: &mut Matrix) -> u32 {
 }
 
 fn make_n_steps(mat: &mut Matrix, n: usize) -> u32 {
-    (0..n).map(|n| make_step(mat)).sum()
+    (0..n).map(|_| make_step(mat)).sum()
 }
 
 #[derive(Debug)]
@@ -92,10 +92,6 @@ impl Matrix {
             col,
             row,
         }
-    }
-
-    fn get(&self, row: usize, col: usize) -> u32 {
-        self.vec[row * (self.col + 1) + col]
     }
 
     fn inc(&mut self, row: usize, col: usize) -> bool {

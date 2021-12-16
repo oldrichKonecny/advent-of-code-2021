@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 fn main() {
     let input = include_str!("../input.txt");
@@ -8,13 +8,13 @@ fn main() {
 }
 
 fn second_solution(input: &str) -> u32 {
-    let mut graph = Graph::from(input);
+    let graph = Graph::from(input);
     let mut visited = HashMap::new();
     pathfinder(&graph, "start", &mut visited, true)
 }
 
 fn first_solution(input: &str) -> u32 {
-    let mut graph = Graph::from(input);
+    let graph = Graph::from(input);
     let mut visited = HashMap::new();
     pathfinder(&graph, "start", &mut visited, false)
 }
@@ -71,12 +71,6 @@ impl Graph {
             });
 
         Self { map }
-    }
-
-    fn print(&self) {
-        for (key, val) in &self.map {
-            println!("{} -> {:?}", key, val);
-        }
     }
 }
 
