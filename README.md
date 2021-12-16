@@ -13,7 +13,7 @@ advent of code 2021 puzzle challenge repository (not sure if I can finish tho) :
 - [x] **[Day 09](/puzzles/day09/DAY_09.MD)**
 - [x] **[Day 10](/puzzles/day10/DAY_10.MD)**
 - [x] **[Day 11](/puzzles/day11/DAY_11.MD)**
-- [ ] **Day 12**
+- [x] **[Day 12](/puzzles/day12/DAY_12.MD)**
 - [ ] **Day 13**
 - [ ] **Day 14**
 - [ ] **Day 15**
