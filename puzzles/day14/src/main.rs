@@ -18,34 +18,34 @@ fn second_solution(input: &str) -> usize {
             .or_insert(1);
     }
 
-    (0..2).for_each(|_| {
+    let mut results: HashMap<char, usize> = HashMap::new();
+    for c in polymer.template.iter() {
+        results.entry(*c)
+            .and_modify(|x| *x += 1)
+            .or_insert(1);
+    }
+
+    (0..40).for_each(|_| {
         let mut new_pairs: HashMap<(char, char), usize> = HashMap::new();
         pairs.iter().for_each(|((c1, c2), n)| {
             let x = polymer.rules.get(&(*c1, *c2)).unwrap();
             add_to_map(&mut new_pairs, (*c1, *x), *n);
             add_to_map(&mut new_pairs, (*x, *c2), *n);
+            results.entry(*x)
+                .and_modify(|val| *val += *n)
+                .or_insert(*n);
         });
 
-        new_pairs.into_iter().for_each(|(key, val)| {
-            add_to_map(&mut pairs, key, val);
-        });
+        pairs = new_pairs;
 
-        polymer2.make_step();
-        polymer2.print_template();
-
-        let char_map = to_char_map(&pairs);
-        let min = char_map.values().min().unwrap();
-        let max = char_map.values().max().unwrap();
+        let min = results.values().min().unwrap();
+        let max = results.values().max().unwrap();
         println!("{:?}", pairs);
-        println!("{:?}", char_map);
+        println!("{:?}", results);
         println!("fast result: {}", *max - *min);
     });
 
-    let char_map = to_char_map(&pairs);
-    let min = char_map.values().min().unwrap();
-    let max = char_map.values().max().unwrap();
-
-    *max - *min
+    0
 }
 
 fn to_char_map(pairs: &HashMap<(char, char), usize>) -> HashMap<char, usize> {
