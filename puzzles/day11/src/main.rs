@@ -82,16 +82,16 @@ impl Matrix {
         for (i, line) in str.lines().enumerate() {
             for (j, b) in line.bytes().enumerate() {
                 vec.push(b as u32 - 48);
-                if j > col { col = j; }
+                if j > col {
+                    col = j;
+                }
             }
-            if row < i { row = i; }
+            if row < i {
+                row = i;
+            }
         }
 
-        Self {
-            vec,
-            col,
-            row,
-        }
+        Self { vec, col, row }
     }
 
     fn inc(&mut self, row: usize, col: usize) -> bool {
@@ -115,8 +115,6 @@ impl Matrix {
         })
     }
 }
-
-
 
 mod tests {
     #[test]

@@ -6,7 +6,8 @@ fn main() {
 }
 
 fn second_solution(input: &str) -> u64 {
-    let input = input.lines()
+    let input = input
+        .lines()
         .map(|s| {
             s.bytes()
                 .map(|b| if b == b'1' { true } else { false })
@@ -51,16 +52,10 @@ fn second_solution(input: &str) -> u64 {
 }
 
 fn determine_most(input: &[Vec<bool>], index: usize, most_common: bool) -> bool {
-    let one = input.iter()
-        .filter(|v| v[index] == true)
-        .count();
+    let one = input.iter().filter(|v| v[index] == true).count();
 
     let zero = input.len() - one;
-    let res = if most_common {
-        one >= zero
-    } else {
-        zero > one
-    };
+    let res = if most_common { one >= zero } else { zero > one };
     // println!("determine most: one={}, zero={}, most_common={}, index={}, input_len={}, return={}", one, zero, most_common, index, input.len(), res);
     res
 }
@@ -77,7 +72,8 @@ fn first_solution(input: &str) -> u32 {
 }
 
 fn convert_to_decimal(input: &[bool]) -> u64 {
-    let decimal_str = input.iter()
+    let decimal_str = input
+        .iter()
         .map(|b| if *b == true { '1' } else { '0' })
         .collect::<String>();
     u64::from_str_radix(&decimal_str, 2).unwrap()
@@ -97,10 +93,7 @@ impl BitCounter {
                 vec[i] += 1;
             }
         }
-        Self {
-            vec,
-            full_count: 1,
-        }
+        Self { vec, full_count: 1 }
     }
 
     fn add(&mut self, str: &str) {
@@ -115,17 +108,19 @@ impl BitCounter {
 
     fn get_decimal_numbers(&self) -> (u32, u32) {
         let half = self.full_count / 2;
-        let gamma = self.vec.iter()
-            .map(|i|  if *i > half { true } else { false })
+        let gamma = self
+            .vec
+            .iter()
+            .map(|i| if *i > half { true } else { false })
             .collect::<Vec<_>>();
-        let epsilon = gamma.iter()
-            .map(|b| !b )
-            .collect::<Vec<_>>();
+        let epsilon = gamma.iter().map(|b| !b).collect::<Vec<_>>();
 
-        let gamma = gamma.iter()
+        let gamma = gamma
+            .iter()
             .map(|b| if *b { '1' } else { '0' })
             .collect::<String>();
-        let epsilon = epsilon.iter()
+        let epsilon = epsilon
+            .iter()
             .map(|b| if *b { '1' } else { '0' })
             .collect::<String>();
 
@@ -141,5 +136,4 @@ mod tests {
     fn test1() {
         assert_eq!(2, 1 + 1);
     }
-
 }

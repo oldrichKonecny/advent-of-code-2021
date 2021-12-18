@@ -33,10 +33,19 @@ struct Graph {
 
 impl Graph {
     fn print(&self) {
-        let max_by_x = self.points.iter().max_by(|(x1, _), (x2, _)| x1.cmp(x2)).unwrap();
-        let max_by_y = self.points.iter().max_by(|(_, y1), (_, y2)| y1.cmp(y2)).unwrap();
+        let max_by_x = self
+            .points
+            .iter()
+            .max_by(|(x1, _), (x2, _)| x1.cmp(x2))
+            .unwrap();
+        let max_by_y = self
+            .points
+            .iter()
+            .max_by(|(_, y1), (_, y2)| y1.cmp(y2))
+            .unwrap();
 
-        let mut canvas: Vec<Vec<bool>> = vec![vec![false; 1 + max_by_x.0 as usize]; 1 + max_by_y.1 as usize];
+        let mut canvas: Vec<Vec<bool>> =
+            vec![vec![false; 1 + max_by_x.0 as usize]; 1 + max_by_y.1 as usize];
         for (x, y) in self.points.iter() {
             canvas[*y as usize][*x as usize] = true;
         }
@@ -53,7 +62,6 @@ impl Graph {
             print!("\n");
         }
     }
-    
 
     fn fold_all(&mut self) {
         (0..self.instructions.len()).for_each(|_| self.fold_once().unwrap())
@@ -64,12 +72,14 @@ impl Graph {
 
         match instruction {
             Some(Instruction::X(n)) => {
-                self.points.iter_mut()
+                self.points
+                    .iter_mut()
                     .filter(|(x, _)| *x > n)
                     .for_each(|(x, _)| *x -= 2 * (*x - n));
             }
             Some(Instruction::Y(n)) => {
-                self.points.iter_mut()
+                self.points
+                    .iter_mut()
                     .filter(|(_, y)| *y > n)
                     .for_each(|(_, y)| *y -= 2 * (*y - n));
             }

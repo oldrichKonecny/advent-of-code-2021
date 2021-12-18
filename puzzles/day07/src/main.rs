@@ -6,15 +6,18 @@ fn main() {
 }
 
 fn second_solution(input: &str) -> i32 {
-    let numbers = input.split(',')
-        .map(|s| s.parse::<i32>().unwrap_or_else(|e| panic!("cannot parse input into numbers: {}", e)))
+    let numbers = input
+        .split(',')
+        .map(|s| {
+            s.parse::<i32>()
+                .unwrap_or_else(|e| panic!("cannot parse input into numbers: {}", e))
+        })
         .collect::<Vec<_>>();
-    let mean = numbers.iter()
-        .map(|n| *n)
-        .sum::<i32>() as f64 / numbers.len() as f64;
+    let mean = numbers.iter().map(|n| *n).sum::<i32>() as f64 / numbers.len() as f64;
     let mean = mean.floor() as i32;
 
-    numbers.iter()
+    numbers
+        .iter()
         .map(|n| {
             let x = (*n - mean).abs();
             ((x + 1) * x) / 2
@@ -23,8 +26,12 @@ fn second_solution(input: &str) -> i32 {
 }
 
 fn first_solution(input: &str) -> i32 {
-    let mut numbers = input.split(',')
-        .map(|s| s.parse::<i32>().unwrap_or_else(|e| panic!("cannot parse input into numbers: {}", e)))
+    let mut numbers = input
+        .split(',')
+        .map(|s| {
+            s.parse::<i32>()
+                .unwrap_or_else(|e| panic!("cannot parse input into numbers: {}", e))
+        })
         .collect::<Vec<_>>();
     numbers.sort();
 
@@ -34,11 +41,8 @@ fn first_solution(input: &str) -> i32 {
         (numbers[numbers.len() / 2] + numbers[(numbers.len() + 1) / 2]) / 2
     };
 
-    numbers.iter()
-        .map(|n| (*n - median).abs())
-        .sum()
+    numbers.iter().map(|n| (*n - median).abs()).sum()
 }
-
 
 mod tests {
     #[test]

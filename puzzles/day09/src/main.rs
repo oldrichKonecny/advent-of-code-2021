@@ -20,24 +20,26 @@ fn second_solution(input: &str) -> usize {
             }
 
             let prev_bounds = all_bounds.get_mut(i - 1).unwrap();
-            let mut affected_bounds = prev_bounds.iter_mut().filter(|b| b.is_connected(r.0, r.1)).collect::<Vec<_>>();
+            let mut affected_bounds = prev_bounds
+                .iter_mut()
+                .filter(|b| b.is_connected(r.0, r.1))
+                .collect::<Vec<_>>();
             match affected_bounds.len() {
                 0 => bounds.push(Bound::from(r.0, r.1, r.2)),
-                1 => bounds.push(Bound::from_bound(r.0, r.1, r.2,&mut affected_bounds[0])),
+                1 => bounds.push(Bound::from_bound(r.0, r.1, r.2, &mut affected_bounds[0])),
                 _ => {
-                    let new_bound = Bound::from_bound(r.0, r.1, r.2,&mut affected_bounds[0]);
+                    let new_bound = Bound::from_bound(r.0, r.1, r.2, &mut affected_bounds[0]);
                     affected_bounds[1..].iter_mut().for_each(|b| {
                         let b_val = b.sum.take() + new_bound.sum.take();
                         new_bound.sum.replace(b_val);
                         b.sum = new_bound.sum.clone();
                     });
                     bounds.push(new_bound);
-                },
+                }
             }
         }
         all_bounds.push(bounds);
     }
-
 
     // for (i, vec) in all_bounds.iter().enumerate() {
     //     for (j, val) in vec.iter().enumerate() {
@@ -46,9 +48,10 @@ fn second_solution(input: &str) -> usize {
     //     println!();
     // }
 
-    let mut sums = all_bounds.iter()
+    let mut sums = all_bounds
+        .iter()
         .flat_map(|bounds| bounds.iter())
-        .map(|b| { b.sum.take() })
+        .map(|b| b.sum.take())
         .collect::<Vec<_>>();
     sums.sort();
 
@@ -76,7 +79,9 @@ impl Bound {
 
     fn from_bound(start: usize, end: usize, is_sink: bool, old_bound: &mut Bound) -> Self {
         assert!(start <= end, "Bound start is bigger than end.");
-        old_bound.sum.replace((end - start + 1) + old_bound.sum.take());
+        old_bound
+            .sum
+            .replace((end - start + 1) + old_bound.sum.take());
         Self {
             start,
             end,
@@ -96,27 +101,29 @@ fn first_solution(input: &str) -> u64 {
 }
 
 struct Matrix {
-    vec: Vec<Vec<u32>>
+    vec: Vec<Vec<u32>>,
 }
 
 impl Matrix {
     fn from(str: &str) -> Self {
-        let vec = str.lines()
+        let vec = str
+            .lines()
             .map(|l| l.chars().map(|c| c as u32 - 48).collect::<Vec<_>>())
             .collect::<Vec<_>>();
-        Self {
-            vec
-        }
+        Self { vec }
     }
 
     fn check_low_point(&self, row: usize, col: usize) -> bool {
-        let r = self.vec.get(row).expect(&format!("Row {} does not exist", row));
+        let r = self
+            .vec
+            .get(row)
+            .expect(&format!("Row {} does not exist", row));
         let value = *r.get(col).expect(&format!("Column {} does not exist", col));
 
-        (col == 0 || value < r[col - 1]) &&
-        (col >= r.len() - 1 || value < r[col + 1]) &&
-        (row == 0 || value < self.vec[row - 1][col]) &&
-        (row >= self.vec.len() - 1 || value < self.vec[row + 1][col])
+        (col == 0 || value < r[col - 1])
+            && (col >= r.len() - 1 || value < r[col + 1])
+            && (row == 0 || value < self.vec[row - 1][col])
+            && (row >= self.vec.len() - 1 || value < self.vec[row + 1][col])
     }
 
     fn get_risk_levels_sum(&self) -> u64 {
@@ -132,7 +139,9 @@ impl Matrix {
     }
 
     fn get_ranges(&self) -> Vec<Vec<(usize, usize, bool)>> {
-        self.vec.iter().enumerate()
+        self.vec
+            .iter()
+            .enumerate()
             .map(|(i, vec)| {
                 let mut res = Vec::new();
                 let mut tmp = None;
@@ -159,7 +168,6 @@ impl Matrix {
             .collect()
     }
 }
-
 
 mod tests {
     #[test]

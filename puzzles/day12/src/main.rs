@@ -19,19 +19,27 @@ fn first_solution(input: &str) -> u32 {
     pathfinder(&graph, "start", &mut visited, false)
 }
 
-fn pathfinder(graph: &Graph, start_node: &str, visited: &mut HashMap<String, u32>, can_use_double: bool) -> u32 {
+fn pathfinder(
+    graph: &Graph,
+    start_node: &str,
+    visited: &mut HashMap<String, u32>,
+    can_use_double: bool,
+) -> u32 {
     let nodes = graph.map.get(start_node).unwrap();
     let mut result = 0;
 
     if start_node.chars().next().unwrap().is_lowercase() {
-        visited.entry(start_node.to_string()).and_modify(|v| *v += 1).or_insert(1);
+        visited
+            .entry(start_node.to_string())
+            .and_modify(|v| *v += 1)
+            .or_insert(1);
     }
 
     for node in nodes.iter() {
         let visit = visited.get(node);
         if *node == "end" {
             result += 1;
-        } else if  visit.is_some() && *visit.unwrap() > 0 && !can_use_double {
+        } else if visit.is_some() && *visit.unwrap() > 0 && !can_use_double {
             continue;
         } else if visit.is_some() && *visit.unwrap() > 0 && can_use_double {
             result += pathfinder(graph, node, visited, false);
@@ -40,10 +48,11 @@ fn pathfinder(graph: &Graph, start_node: &str, visited: &mut HashMap<String, u32
         }
     }
 
-    visited.entry(start_node.to_string()).and_modify(|v| *v -= 1);
+    visited
+        .entry(start_node.to_string())
+        .and_modify(|v| *v -= 1);
     result
 }
-
 
 struct Graph {
     map: HashMap<String, Vec<String>>,
@@ -63,7 +72,7 @@ impl Graph {
                         .and_modify(|e| e.push(b.to_string()))
                         .or_insert(vec![b.to_string()]);
                 }
-                if a != "start" && b != "end"{
+                if a != "start" && b != "end" {
                     map.entry(b.to_string())
                         .and_modify(|e| e.push(a.to_string()))
                         .or_insert(vec![a.to_string()]);
@@ -73,7 +82,6 @@ impl Graph {
         Self { map }
     }
 }
-
 
 mod tests {
     #[test]

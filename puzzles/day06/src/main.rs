@@ -26,7 +26,8 @@ struct Population {
 
 impl Population {
     fn from(str: &str, cycle_len: usize, adult_fish_reset: usize) -> Self {
-        let input = str.split(',')
+        let input = str
+            .split(',')
             .filter_map(|s| s.parse::<usize>().ok())
             .collect::<Vec<_>>();
         let mut cycle = vec![0u64; cycle_len];
@@ -38,7 +39,7 @@ impl Population {
             cycle,
             cycle_len,
             zero_marker: 0,
-            adult_fish_reset
+            adult_fish_reset,
         }
     }
 
@@ -56,7 +57,6 @@ impl Population {
         self.cycle.iter().sum()
     }
 }
-
 
 mod tests {
     #[test]

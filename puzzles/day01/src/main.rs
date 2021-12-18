@@ -2,7 +2,8 @@
 extern crate test;
 
 fn main() {
-    let input = include_str!("../input.txt").lines()
+    let input = include_str!("../input.txt")
+        .lines()
         .map(|l| l.parse::<i32>().unwrap())
         .collect::<Vec<i32>>();
 
@@ -12,9 +13,7 @@ fn main() {
 }
 
 fn second_solution(input: &[i32]) -> usize {
-    input.windows(4)
-        .filter(|&win| win[0] < win[3] )
-        .count()
+    input.windows(4).filter(|&win| win[0] < win[3]).count()
 }
 
 fn first_solution(input: &[i32]) -> u64 {
@@ -31,11 +30,8 @@ fn first_solution(input: &[i32]) -> u64 {
 }
 
 fn first_solution_window(input: &[i32]) -> usize {
-    input.windows(2)
-        .filter(|&win| win[0] < win[1])
-        .count()
+    input.windows(2).filter(|&win| win[0] < win[1]).count()
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -45,34 +41,31 @@ mod tests {
 
     #[bench]
     fn bench_sol1_loop(b: &mut Bencher) {
-        let input = include_str!("../input.txt").lines()
+        let input = include_str!("../input.txt")
+            .lines()
             .map(|l| l.parse::<i32>().unwrap())
             .collect::<Vec<i32>>();
 
-        b.iter(|| {
-            first_solution(&input)
-        })
+        b.iter(|| first_solution(&input))
     }
 
     #[bench]
     fn bench_sol1_window(b: &mut Bencher) {
-        let input = include_str!("../input.txt").lines()
+        let input = include_str!("../input.txt")
+            .lines()
             .map(|l| l.parse::<i32>().unwrap())
             .collect::<Vec<i32>>();
 
-        b.iter(|| {
-            first_solution_window(&input)
-        })
+        b.iter(|| first_solution_window(&input))
     }
 
     #[bench]
     fn bench_sol2(b: &mut Bencher) {
-        let input = include_str!("../input.txt").lines()
+        let input = include_str!("../input.txt")
+            .lines()
             .map(|l| l.parse::<i32>().unwrap())
             .collect::<Vec<i32>>();
 
-        b.iter(|| {
-            second_solution(&input)
-        })
+        b.iter(|| second_solution(&input))
     }
 }

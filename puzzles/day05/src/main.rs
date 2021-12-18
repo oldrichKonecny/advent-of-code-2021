@@ -8,7 +8,8 @@ fn main() {
 }
 
 fn second_solution(input: &str) -> usize {
-    let lines = input.lines()
+    let lines = input
+        .lines()
         .map(|l| Line::from(l).unwrap_or_else(|e| panic!("Cannot create line from input: {:?}", e)))
         .collect::<Vec<_>>();
 
@@ -20,13 +21,12 @@ fn second_solution(input: &str) -> usize {
         }
     }
 
-    graph.values()
-        .filter(|v| **v > 1)
-        .count()
+    graph.values().filter(|v| **v > 1).count()
 }
 
 fn first_solution(input: &str) -> usize {
-    let lines = input.lines()
+    let lines = input
+        .lines()
         .map(|l| Line::from(l).unwrap_or_else(|e| panic!("Cannot create line from input: {:?}", e)))
         .filter(Line::is_horizontal_or_vertical)
         .collect::<Vec<_>>();
@@ -39,9 +39,7 @@ fn first_solution(input: &str) -> usize {
         }
     }
 
-    graph.values()
-        .filter(|v| **v > 1)
-        .count()
+    graph.values().filter(|v| **v > 1).count()
 }
 
 #[derive(Debug, Clone, Eq, PartialEq)]
@@ -70,8 +68,7 @@ impl Line {
             }
         }
 
-        parser::line(str)
-            .map_err(|e| Error::ParseError(str.into(), String::from(e.to_string())))
+        parser::line(str).map_err(|e| Error::ParseError(str.into(), String::from(e.to_string())))
     }
 
     fn is_horizontal_or_vertical(&self) -> bool {
@@ -80,17 +77,27 @@ impl Line {
 
     fn get_all_points(&self) -> Vec<(u32, u32)> {
         if self.x1 == self.x2 {
-            (self.y1.min(self.y2)..=self.y2.max(self.y1)).map(|y| (self.x1, y)).collect()
+            (self.y1.min(self.y2)..=self.y2.max(self.y1))
+                .map(|y| (self.x1, y))
+                .collect()
         } else if self.y1 == self.y2 {
-            (self.x1.min(self.x2)..=self.x2.max(self.x1)).map(|x| (x, self.y1)).collect()
+            (self.x1.min(self.x2)..=self.x2.max(self.x1))
+                .map(|x| (x, self.y1))
+                .collect()
         } else {
-            let (l, h) = if self.x1 < self.x2 { ((self.x1, self.y1), (self.x2, self.y2)) } else { ((self.x2, self.y2), (self.x1, self.y1)) };
+            let (l, h) = if self.x1 < self.x2 {
+                ((self.x1, self.y1), (self.x2, self.y2))
+            } else {
+                ((self.x2, self.y2), (self.x1, self.y1))
+            };
             let y_multiplier: i32 = if l.1 < h.1 { 1 } else { -1 };
-            (l.0..=h.0).enumerate().map(|(i, x)| (x, (l.1 as i32 + i as i32 * y_multiplier) as u32)).collect()
+            (l.0..=h.0)
+                .enumerate()
+                .map(|(i, x)| (x, (l.1 as i32 + i as i32 * y_multiplier) as u32))
+                .collect()
         }
     }
 }
-
 
 mod tests {
     #[test]

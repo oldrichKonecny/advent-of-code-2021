@@ -6,7 +6,8 @@ fn main() {
 }
 
 fn second_solution(input: &str) -> u64 {
-    let mut scores = input.lines()
+    let mut scores = input
+        .lines()
         .map(|l| Line::from(l))
         .filter_map(|l| l.incomplete_score())
         .collect::<Vec<_>>();
@@ -16,7 +17,8 @@ fn second_solution(input: &str) -> u64 {
 }
 
 fn first_solution(input: &str) -> u32 {
-    input.lines()
+    input
+        .lines()
         .map(|l| Line::from(l))
         .filter_map(|l| l.corrupted_score())
         .sum()
@@ -45,13 +47,13 @@ impl<'a> Line<'a> {
                 ')' | ']' | '}' | '>' => {
                     if let Some(x) = stack.pop() {
                         match (x, c) {
-                            ('(', ')') | ('[', ']') | ('{', '}') | ('<', '>')=> continue,
+                            ('(', ')') | ('[', ']') | ('{', '}') | ('<', '>') => continue,
                             _ => (),
                         }
                     }
                     state = Some(LineState::Corrupted((c, i)));
-                    break
-                },
+                    break;
+                }
                 _ => panic!("Unexpected token: {} at position: {}.", c, i),
             }
         }
@@ -60,9 +62,8 @@ impl<'a> Line<'a> {
             state = Some(LineState::Incomplete(stack));
         } else if state.is_none() {
             state = Some(LineState::Ok);
-        }{
-
         }
+        {}
 
         Self {
             str,
@@ -86,13 +87,15 @@ impl<'a> Line<'a> {
 
     fn incomplete_score(&self) -> Option<u64> {
         if let LineState::Incomplete(stack) = &self.state {
-            let sum = stack.iter().rev()
+            let sum = stack
+                .iter()
+                .rev()
                 .map(|c| match c {
                     '(' => 1,
                     '[' => 2,
                     '{' => 3,
                     '<' => 4,
-                    _ => panic!("Unknown character: {}, should not be here.", c)
+                    _ => panic!("Unknown character: {}, should not be here.", c),
                 })
                 .fold(0u64, |acc, x| acc * 5 + x);
             Some(sum)

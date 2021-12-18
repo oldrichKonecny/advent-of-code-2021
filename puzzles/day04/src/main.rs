@@ -7,12 +7,16 @@ fn main() {
 
 fn second_solution(input: &str) -> u64 {
     let mut split = input.split("\r\n\r\n");
-    let board_inputs = split.next().unwrap().split(',')
-        .map(|s| s.parse::<u32>().unwrap_or_else(|e| panic!("Cannot parse: {}, with error: {}", s, e)))
+    let board_inputs = split
+        .next()
+        .unwrap()
+        .split(',')
+        .map(|s| {
+            s.parse::<u32>()
+                .unwrap_or_else(|e| panic!("Cannot parse: {}, with error: {}", s, e))
+        })
         .collect::<Vec<_>>();
-    let boards = split.into_iter()
-        .map(Board::from)
-        .collect::<Vec<_>>();
+    let boards = split.into_iter().map(Board::from).collect::<Vec<_>>();
 
     let (sum, last_input) = play_bingo_lose(&board_inputs, boards);
     sum * last_input
@@ -31,7 +35,7 @@ fn play_bingo_lose(values: &[u32], mut boards: Vec<Board>) -> (u64, u64) {
             let mut final_board = boards.remove(0);
             for j in values[i..].iter() {
                 if final_board.try_mark(*j) && final_board.check_for_win() {
-                    return (final_board.sum_non_marked(), *j as u64)
+                    return (final_board.sum_non_marked(), *j as u64);
                 }
             }
         }
@@ -41,12 +45,16 @@ fn play_bingo_lose(values: &[u32], mut boards: Vec<Board>) -> (u64, u64) {
 
 fn first_solution(input: &str) -> u64 {
     let mut split = input.split("\r\n\r\n");
-    let board_inputs = split.next().unwrap().split(',')
-        .map(|s| s.parse::<u32>().unwrap_or_else(|e| panic!("Cannot parse: {}, with error: {}", s, e)))
+    let board_inputs = split
+        .next()
+        .unwrap()
+        .split(',')
+        .map(|s| {
+            s.parse::<u32>()
+                .unwrap_or_else(|e| panic!("Cannot parse: {}, with error: {}", s, e))
+        })
         .collect::<Vec<_>>();
-    let mut boards = split.into_iter()
-        .map(Board::from)
-        .collect::<Vec<_>>();
+    let mut boards = split.into_iter().map(Board::from).collect::<Vec<_>>();
 
     let (sum, last_input) = play_bingo_win(&board_inputs, &mut boards);
     sum * last_input
@@ -56,7 +64,7 @@ fn play_bingo_win(values: &[u32], boards: &mut [Board]) -> (u64, u64) {
     for (i, x) in values.iter().enumerate() {
         for b in boards.iter_mut() {
             if b.try_mark(*x) && i >= 4 && b.check_for_win() {
-                return (b.sum_non_marked(), *x as u64)
+                return (b.sum_non_marked(), *x as u64);
             }
         }
     }
@@ -73,13 +81,15 @@ struct Board {
 impl Board {
     fn from(input: &str) -> Self {
         let mut square = None;
-        let vec = input.lines()
+        let vec = input
+            .lines()
             .map(|s| {
-                let inner_vec = s.split_whitespace()
+                let inner_vec = s
+                    .split_whitespace()
                     .filter(|s| !s.is_empty())
                     .map(|s| (false, s.parse().unwrap()))
                     .collect::<Vec<(bool, u32)>>();
-                if square.is_some() && square.unwrap() != inner_vec.len()  {
+                if square.is_some() && square.unwrap() != inner_vec.len() {
                     panic!("Different row length.");
                 } else {
                     square = Some(inner_vec.len());
@@ -93,7 +103,7 @@ impl Board {
         Self {
             vec,
             counter: vec![0; square * 2],
-            square
+            square,
         }
     }
 
@@ -104,7 +114,7 @@ impl Board {
                     val.0 = true;
                     self.counter[i] += 1;
                     self.counter[self.square + j] += 1;
-                    return true
+                    return true;
                 }
             }
         }
