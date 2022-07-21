@@ -1,0 +1,5 @@
+[alias]
+qwe = "build --release"
+
+[env]
+PHF_STATS = "true" # this does not work tho...

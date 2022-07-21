@@ -1,11 +1,17 @@
-use std::collections::HashMap;
+use phf::phf_map;
 use regex::Regex;
 
 fn main() {
-    let input = include_str!("../input_tst.txt");
+    // let input = include_str!("../input_tst.txt");
+    //
+    // println!("First solution: {}", first_solution(&input));
+    // println!("Second solution: {}", second_solution(&input));
 
-    println!("First solution: {}", first_solution(&input));
-    println!("Second solution: {}", second_solution(&input));
+    let input = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',];
+    for i in input.chunks(2) {
+        println!("{:?}", i);
+    }
+
 }
 
 fn second_solution(input: &str) -> usize {
@@ -13,50 +19,21 @@ fn second_solution(input: &str) -> usize {
     let mut first_position = parse_starting_position(input.next().unwrap()) as u64;
     let mut sec_position = parse_starting_position(input.next().unwrap()) as u64;
 
-    let mut p1_points = solve_rec(first_position, 1);
-    let mut p2_points= solve_rec(sec_position, 1);
 
-    println!("p1: {:?}", p1_points);
-    println!("p2: {:?}", p2_points);
 
     0
 }
 
 
-
-fn solve_rec(point: u64, times: u64) -> HashMap<u64, u64> {
-    let occurrence_map = occurrences_map();
-    let mut res = HashMap::new();
-
-    for (key, val) in occurrence_map {
-        let new_position = new_position_for_move(key as u32, point as u32) as u64;
-        res.entry(new_position).or_insert(val * times);
-    }
-
-    res
-}
-
-fn occurrences_map() -> HashMap<u64, u64> {
-    let mut res = HashMap::new();
-
-    res.entry(3).or_insert(1);
-    res.entry(4).or_insert(3);
-    res.entry(5).or_insert(6);
-    res.entry(6).or_insert(7);
-    res.entry(7).or_insert(6);
-    res.entry(8).or_insert(3);
-    res.entry(9).or_insert(1);
-
-    res
-}
-
-// 3 -> 1
-// 4 -> 3
-// 5 -> 6
-// 6 -> 7
-// 7 -> 6
-// 8 -> 3
-// 9 -> 1
+static OCCURRENCES_MAP: phf::Map<u64, u64> = phf_map! {
+    3u64 => 1,
+    4u64 => 3,
+    5u64 => 6,
+    6u64 => 7,
+    7u64 => 6,
+    8u64 => 3,
+    9u64 => 1,
+};
 
 fn first_solution(input: &str) -> u32 {
     let mut input = input.lines();

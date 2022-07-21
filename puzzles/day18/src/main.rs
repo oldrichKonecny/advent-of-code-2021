@@ -1,3 +1,5 @@
+const MAX_DEPTH: usize = 4;
+
 fn main() {
     let input = include_str!("../input_tst.txt");
 
@@ -14,54 +16,87 @@ fn first_solution(input: &str) -> usize {
         .map(|line| Node::parse(line).unwrap())
         .collect::<Vec<_>>();
 
-    let node1 = &mut roots[0];
-    node1.reduce();
+    roots.iter_mut().for_each(|r| r.reduce());
 
     0
 }
 
-#[derive(Debug)]
+
+
 enum Node {
     Leaf(u8),
-    Inner(Box<Node>, Box<Node>),
+    Inner {
+        left: u8,
+        right: u8,
+        depth: usize,
+
+    }
 }
 
 impl Node {
     fn reduce(&mut self) {
-        while self.try_explode() {}
-        while self.try_split() {}
+        loop {
+            if self.try_explode() {
+                continue
+            } else {
+                if self.try_split() {
+                    continue
+                } else {
+                    break
+                }
+            }
+        }
     }
 
     fn try_explode(&mut self) -> bool {
-        println!("trying to explode: {:?}", self);
+        println!("\nTrying to explode: {:?}", self);
         let mut node = self;
-        while let Node::Inner(l, r) = node {
-            println!("left: {:?}, right: {:?}", l, r);
-            node = l;
+        for depth in 1..=4 {
+            if let Node::Inner(l, r) = node {
+                println!("LEFT: {:?} | RIGHT: {:?}", l, r);
+
+                if depth == MAX_DEPTH {
+                    println!("Must explode these two: LEFT: {:?} | RIGHT: {:?}", l, r);
+                }
+                match **l {
+                    Node::Inner(_, _) => node = l,
+                    Node::Leaf(_) => node = r,
+                }
+            } else {
+                break;
+            }
         }
 
         false
     }
 
     fn try_split(&mut self) -> bool {
-        println!("trying to split: {:?}", self);
+        // println!("trying to split: {:?}", self);
         false
     }
+}
 
+#[derive(Debug)]
+enum UnmarkedNode {
+    Leaf(u8),
+    Inner(Box<UnmarkedNode>, Box<UnmarkedNode>),
+}
+
+impl UnmarkedNode {
     fn parse(line: &str) -> Result<Self, String> {
         peg::parser! {
             grammar parser() for str {
-                rule leaf() -> Node
+                rule leaf() -> UnmarkedNode
                 = n:$(['0'..='9']+) { Node::Leaf(n.parse::<u8>().unwrap()) }
 
-                rule node() -> Node
+                rule node() -> UnmarkedNode
                 = x:leaf() / x:inner() { x }
 
-                rule inner() -> Node
-                = "[" l:node() "," r:node() "]" { Node::Inner(Box::new(l), Box::new(r)) }
+                rule inner() -> UnmarkedNode
+                = "[" l:node() "," r:node() "]" { UnmarkedNode::Inner(Box::new(l), Box::new(r)) }
 
-                pub(crate) rule root() -> Node
-                = "[" l:node() "," r:node() "]" { Node::Inner(Box::new(l), Box::new(r)) }
+                pub(crate) rule root() -> UnmarkedNode
+                = "[" l:node() "," r:node() "]" { UnmarkedNode::Inner(Box::new(l), Box::new(r)) }
             }
         }
         parser::root(line)
